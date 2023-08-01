@@ -1,3 +1,5 @@
+CREATE EXTENSION IF NOT EXISTS "postgis";
+
 -- Table: PolygonParts.parts
 
 -- DROP TABLE IF EXISTS "PolygonParts".parts;
