@@ -1,6 +1,6 @@
 {
   "openapiConfig": {
-    "filePath": "./openapi3.yaml",
+    "filePath": "./bundledApi.yaml",
     "basePath": "/docs",
     "rawPath": "/api",
     "uiPath": "/api"
@@ -24,5 +24,40 @@
         "options": null
       }
     }
+  },
+  "application": {
+    "arraySeparator": ",",
+    "createPolygonPartsTablesStoredProcedure": "create_polygon_parts_tables",
+    "updatePolygonPartsTablesStoredProcedure": "update_polygon_parts",
+    "entities": {
+      "parts": {
+        "namePrefix": "",
+        "nameSuffix": "_parts"
+      },
+      "polygonParts": {
+        "namePrefix": "",
+        "nameSuffix": ""
+      }
+    }
+  },
+  "db": {
+    "type": "postgres",
+    "host": "localhost",
+    "port": 5432,
+    "username": "postgres",
+    "password": "postgres",
+    "enableSslAuth": false,
+    "sslPaths": {
+      "ca": "",
+      "key": "",
+      "cert": ""
+    },
+    "database": "postgres",
+    "schema": "polygon_parts",
+    "synchronize": false,
+    "logging": false,
+    "entities": ["src/**/DAL/*.ts"],
+    "migrations": ["src/db/migrations/*.js", "src/db/migrations/*.ts"],
+    "applicationName": "polygon_parts"
   }
 }

@@ -1,3 +1,4 @@
+src/db/migrations
 dist
 .github
 .gitignore

@@ -38,5 +38,43 @@
         }
       }
     }
+  },
+  "application": {
+    "arraySeparator": "ARRAY_SEPARATOR",
+    "createPolygonPartsTablesStoredProcedure": "CREATE_POLYGON_PARTS_TABLES_STORED_PROCEDURE",
+    "updatePolygonPartsTablesStoredProcedure": "UPDATE_POLYGON_PARTS_TABLES_STORED_PROCEDURE",
+    "entities": {
+      "parts": {
+        "namePrefix": "ENTITY_PARTS_NAME_PREFIX",
+        "nameSuffix": "ENTITY_PARTS_NAME_SUFFIX"
+      },
+      "polygonParts": {
+        "namePrefix": "ENTITY_POLYGON_PARTS_NAME_PREFIX",
+        "nameSuffix": "ENTITY_POLYGON_PARTS_NAME_SUFFIX"
+      }
+    }
+  },
+  "db": {
+    "type": "DB_TYPE",
+    "host": "DB_HOST",
+    "port": {
+      "__name": "DB_PORT",
+      "__format": "number"
+    },
+    "username": "DB_USERNAME",
+    "password": "DB_PASSWORD",
+    "enableSslAuth": {
+      "__name": "DB_ENABLE_SSL_AUTH",
+      "__format": "boolean"
+    },
+    "sslPaths": {
+      "ca": "DB_CA_PATH",
+      "key": "DB_KEY_PATH",
+      "cert": "DB_CERT_PATH"
+    },
+    "database": "DB_NAME",
+    "schema": "DB_SCHEMA",
+    "logging": "DB_LOGGING",
+    "applicationName": "DB_APPNAME"
   }
 }
