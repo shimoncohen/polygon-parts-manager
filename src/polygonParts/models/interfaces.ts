@@ -1,7 +1,14 @@
 import type { Logger } from '@map-colonies/js-logger';
-import type { IPolygonPart, PolygonPart, PolygonPartsPayload } from '@map-colonies/mc-model-types';
+import type {
+  IPolygonPart,
+  PolygonPart,
+  PolygonPartsPayload as PolygonPartsPayloadType,
+  ProductType as ProductTypeEnum,
+} from '@map-colonies/mc-model-types';
 import type { EntityManager } from 'typeorm';
 import type { DbConfig } from '../../common/interfaces';
+import type { EnsureType } from '../../common/types';
+import { PRODUCT_TYPES } from './constants';
 
 interface CommonPayload extends Omit<PolygonPartsPayload, 'partsData'>, PolygonPart {}
 interface CommonProperties extends Readonly<Omit<CommonPayload, 'countries' | 'cities' | 'sensors'>> {
@@ -11,6 +18,13 @@ interface CommonProperties extends Readonly<Omit<CommonPayload, 'countries' | 'c
 }
 interface PartProperties extends Readonly<Pick<IPolygonPart, 'id'>> {}
 interface PolygonPartProperties extends Readonly<Pick<IPolygonPart, 'id' | 'partId'>> {}
+
+/**
+ * Polygon parts ingestion payload
+ */
+export interface PolygonPartsPayload extends Omit<PolygonPartsPayloadType, 'productType'> {
+  readonly productType: ProductType;
+}
 
 /**
  * Common record properties of part and polygon part
@@ -77,3 +91,8 @@ export interface EntityNames {
  * DB schema type
  */
 export type DBSchema = DbConfig['schema'];
+
+/**
+ * Product type values acceptable for polygon parts
+ */
+export type ProductType = Extract<`${ProductTypeEnum}`, EnsureType<(typeof PRODUCT_TYPES)[number], `${ProductTypeEnum}`>>;
