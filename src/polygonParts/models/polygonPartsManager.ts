@@ -1,4 +1,4 @@
-import { ConflictError } from '@map-colonies/error-types';
+import { ConflictError, HttpError, InternalServerError } from '@map-colonies/error-types';
 import type { Logger } from '@map-colonies/js-logger';
 import { inject, injectable } from 'tsyringe';
 import { ConnectionManager } from '../../common/connectionManager';
@@ -23,7 +23,7 @@ export class PolygonPartsManager {
   public constructor(
     @inject(SERVICES.LOGGER) private readonly logger: Logger,
     @inject(SERVICES.CONFIG) private readonly config: IConfig,
-    private readonly connectionManager: ConnectionManager
+    @inject(SERVICES.CONNECTION_MANAGER) private readonly connectionManager: ConnectionManager
   ) {
     this.applicationConfig = this.config.get<ApplicationConfig>('application');
     this.schema = config.get<DBSchema>('db.schema') ?? DEFAULT_SCHEMA;
@@ -33,29 +33,38 @@ export class PolygonPartsManager {
     const { catalogId } = polygonPartsPayload;
 
     const logger = this.logger.child({ catalogId });
-    logger.info(`creating polygon parts`);
+    logger.info({ msg: `creating polygon parts` });
 
-    await this.connectionManager.getDataSource().transaction(async (entityManager) => {
-      const baseIngestionContext: BaseIngestionContext = {
-        entityManager,
-        logger,
-        polygonPartsPayload,
-      };
+    try {
+      await this.connectionManager.getDataSource().transaction(async (entityManager) => {
+        const baseIngestionContext: BaseIngestionContext = {
+          entityManager,
+          logger,
+          polygonPartsPayload,
+        };
 
-      await entityManager.query(`SET search_path TO ${this.schema},public`);
-      const entityNames = await this.verifyAvailableTableNames(baseIngestionContext);
-      const ingestionContext = { ...baseIngestionContext, entityNames };
-      await this.createTables(ingestionContext);
-      await this.insert(ingestionContext);
-      await this.updatePolygonParts(ingestionContext);
-    });
+        await entityManager.query(`SET search_path TO ${this.schema},public`);
+        const entityNames = await this.verifyAvailableTableNames(baseIngestionContext);
+        const ingestionContext = { ...baseIngestionContext, entityNames };
+        await this.createTables(ingestionContext);
+        await this.insert(ingestionContext);
+        await this.updatePolygonParts(ingestionContext);
+      });
+    } catch (error) {
+      const errorMessage = 'Transaction failed';
+      logger.error({ msg: errorMessage, error });
+      if (error instanceof HttpError) {
+        throw error;
+      }
+      throw new InternalServerError('Unknown Error');
+    }
   }
 
   private async verifyAvailableTableNames(ingestionContext: BaseIngestionContext): Promise<EntityNames> {
     const { entityManager, logger, polygonPartsPayload } = ingestionContext;
     const entityNames = this.getEntitiesNames(polygonPartsPayload);
 
-    logger.debug(`verifying polygon parts table names are available`);
+    logger.debug({ msg: `verifying polygon parts table names are available` });
 
     await Promise.all(
       Object.values<EntityName>({ ...entityNames }).map(async ({ databaseObjectQualifiedName, entityName }) => {
@@ -91,7 +100,7 @@ export class PolygonPartsManager {
       },
     } = ingestionContext;
 
-    logger.debug(`creating polygon parts tables`);
+    logger.debug({ msg: `creating polygon parts tables` });
 
     try {
       const createPolygonPartsProcedure = this.applicationConfig.createPolygonPartsTablesStoredProcedure;
@@ -114,7 +123,7 @@ export class PolygonPartsManager {
     } = ingestionContext;
     const { partsData, ...props } = polygonPartsPayload;
 
-    logger.debug(`inserting polygon parts data`);
+    logger.debug({ msg: `inserting polygon parts data` });
 
     // inserted props are ordered in the order of the columns of the entity, since the entity is not modeled directly by typeorm
     const insertEntities: IngestionProperties[] = partsData.map((partData) => {
@@ -171,7 +180,7 @@ export class PolygonPartsManager {
       },
     } = ingestionContext;
 
-    logger.debug(`updating polygon parts data`);
+    logger.debug({ msg: `updating polygon parts data` });
 
     const updatePolygonPartsProcedure = this.applicationConfig.updatePolygonPartsTablesStoredProcedure;
 

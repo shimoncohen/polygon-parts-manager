@@ -2,9 +2,10 @@ import jsLogger, { type LoggerOptions } from '@map-colonies/js-logger';
 import { Metrics, getOtelMixin } from '@map-colonies/telemetry';
 import { metrics as OtelMetrics, trace } from '@opentelemetry/api';
 import config from 'config';
-import { type DependencyContainer } from 'tsyringe/dist/typings/types';
+import type { DependencyContainer } from 'tsyringe/dist/typings/types';
+import { ConnectionManager } from './common/connectionManager';
 import { SERVICES, SERVICE_NAME } from './common/constants';
-import { InjectionObject, registerDependencies } from './common/dependencyRegistration';
+import { registerDependencies, type InjectionObject, type Providers } from './common/dependencyRegistration';
 import { tracing } from './common/tracing';
 import { POLYGON_PARTS_ROUTER_SYMBOL, polygonPartsRouterFactory } from './polygonParts/routes/polygonPartsRouter';
 
@@ -13,7 +14,7 @@ export interface RegisterOptions {
   useChild?: boolean;
 }
 
-export const registerExternalValues = (options?: RegisterOptions): DependencyContainer => {
+export const registerExternalValues = async (options?: RegisterOptions): Promise<DependencyContainer> => {
   const loggerConfig = config.get<LoggerOptions>('telemetry.logger');
   const logger = jsLogger({ ...loggerConfig, prettyPrint: loggerConfig.prettyPrint, mixin: getOtelMixin() });
 
@@ -28,18 +29,32 @@ export const registerExternalValues = (options?: RegisterOptions): DependencyCon
     { token: SERVICES.LOGGER, provider: { useValue: logger } },
     { token: SERVICES.TRACER, provider: { useValue: tracer } },
     { token: SERVICES.METER, provider: { useValue: OtelMetrics.getMeterProvider().getMeter(SERVICE_NAME) } },
-    { token: POLYGON_PARTS_ROUTER_SYMBOL, provider: { useFactory: polygonPartsRouterFactory } },
+    {
+      token: SERVICES.CONNECTION_MANAGER,
+      provider: {
+        useAsync: async (dependencyContainer: DependencyContainer): Promise<Providers<ConnectionManager>> => {
+          const connectionManager = dependencyContainer.resolve(ConnectionManager);
+          await connectionManager.init();
+          return { useValue: connectionManager };
+        },
+      },
+    },
+    {
+      token: POLYGON_PARTS_ROUTER_SYMBOL,
+      provider: { useFactory: polygonPartsRouterFactory },
+    },
     {
       token: 'onSignal',
       provider: {
-        useValue: {
-          useValue: async (): Promise<void> => {
-            await Promise.all([tracing.stop(), metrics.stop()]);
-          },
+        useFactory: (dependencyContainer: DependencyContainer): (() => Promise<unknown>) => {
+          const connectionManager = dependencyContainer.resolve<ConnectionManager>(SERVICES.CONNECTION_MANAGER);
+          return async () => {
+            return Promise.all([tracing.stop(), metrics.stop(), connectionManager.destroy()]);
+          };
         },
       },
     },
   ];
-
-  return registerDependencies(dependencies, options?.override, options?.useChild);
+  const registeredDependencies = await registerDependencies(dependencies, options?.override, options?.useChild);
+  return registeredDependencies;
 };
