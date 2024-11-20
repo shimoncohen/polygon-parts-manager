@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.2.1](https://github.com/MapColonies/polygon-parts-manager/compare/v1.2.0...v1.2.1) (2024-11-20)
+
+
+### Bug Fixes
+
+* upgarde git workflow files ([#16](https://github.com/MapColonies/polygon-parts-manager/issues/16)) ([02bff82](https://github.com/MapColonies/polygon-parts-manager/commit/02bff827e41130c3a5bacc9120114d284771531a))
+
 ## 1.2.0 (2024-11-20)
 
 
