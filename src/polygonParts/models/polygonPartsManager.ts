@@ -1,4 +1,4 @@
-import { ConflictError, HttpError, InternalServerError, NotFoundError } from '@map-colonies/error-types';
+import { ConflictError, NotFoundError } from '@map-colonies/error-types';
 import type { Logger } from '@map-colonies/js-logger';
 import { inject, injectable } from 'tsyringe';
 import { EntityManager } from 'typeorm';
@@ -6,7 +6,7 @@ import { ConnectionManager } from '../../common/connectionManager';
 import { DEFAULT_SCHEMA, SERVICES } from '../../common/constants';
 import type { ApplicationConfig, IConfig } from '../../common/interfaces';
 import { Part } from '../DAL/part';
-import { payloadToInsertPartsData } from '../DAL/utils';
+import { getEntitiesNames, payloadToInsertPartsData } from '../DAL/utils';
 import type { DBSchema, EntityName, EntityNames, PolygonPartsPayload } from './interfaces';
 
 @injectable()
@@ -47,10 +47,7 @@ export class PolygonPartsManager {
     } catch (error) {
       const errorMessage = 'Transaction failed';
       logger.error({ msg: errorMessage, error });
-      if (error instanceof HttpError) {
-        throw error;
-      }
-      throw new InternalServerError('Unknown Error');
+      throw error;
     }
   }
 
@@ -90,7 +87,7 @@ export class PolygonPartsManager {
     polygonPartsPayload: PolygonPartsPayload;
   }): Promise<EntityNames> {
     const { entityManager, logger, polygonPartsPayload } = context;
-    const entityNames = this.getEntitiesNames(polygonPartsPayload);
+    const entityNames = getEntitiesNames(polygonPartsPayload);
 
     logger.debug({ msg: 'verifying polygon parts table names are available' });
 
@@ -183,22 +180,6 @@ export class PolygonPartsManager {
     }
   }
 
-  private getDatabaseObjectQualifiedName(value: string): string {
-    return `${this.schema}.${value}`;
-  }
-
-  private getEntitiesNames(polygonPartsPayload: PolygonPartsPayload): EntityNames {
-    const { productId, productType } = polygonPartsPayload;
-    const baseName = [productId, productType].join('_').toLowerCase();
-    const partsEntityName = `${this.applicationConfig.entities.parts.namePrefix}${baseName}${this.applicationConfig.entities.parts.nameSuffix}`;
-    const polygonPartsEntityName = `${this.applicationConfig.entities.polygonParts.namePrefix}${baseName}${this.applicationConfig.entities.polygonParts.nameSuffix}`;
-
-    return {
-      parts: { entityName: partsEntityName, databaseObjectQualifiedName: this.getDatabaseObjectQualifiedName(partsEntityName) },
-      polygonParts: { entityName: polygonPartsEntityName, databaseObjectQualifiedName: this.getDatabaseObjectQualifiedName(polygonPartsEntityName) },
-    };
-  }
-
   private async entityExists(entityManager: EntityManager, entityName: string): Promise<boolean> {
     const exists = await entityManager
       .createQueryBuilder()
@@ -216,7 +197,7 @@ export class PolygonPartsManager {
     polygonPartsPayload: PolygonPartsPayload;
   }): Promise<EntityNames> {
     const { entityManager, logger, polygonPartsPayload } = context;
-    const entityNames = this.getEntitiesNames(polygonPartsPayload);
+    const entityNames = getEntitiesNames(polygonPartsPayload);
 
     logger.debug({ msg: `verifying entities exists` });
 
@@ -243,7 +224,7 @@ export class PolygonPartsManager {
     polygonPartsPayload: PolygonPartsPayload;
   }): Promise<EntityNames> {
     const { entityManager, logger, polygonPartsPayload } = updateContext;
-    const entityNames = this.getEntitiesNames(polygonPartsPayload);
+    const entityNames = getEntitiesNames(polygonPartsPayload);
 
     logger.debug({ msg: `truncating entities` });
 

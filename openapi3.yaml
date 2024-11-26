@@ -10,6 +10,39 @@ tags:
   - name: polygon-parts
     description: CRUD operations to manage polygon-parts
 paths:
+  /aggregation/{catalogId}:
+    get:
+      tags:
+        - aggregation
+      summary: Get aggregated polygon-parts data by catalog id
+      description: Get aggregated polygon-parts data by catalog id
+      operationId: getAggregationLayerMetadata
+      parameters:
+        - in: path
+          name: catalogId
+          schema:
+            type: string
+            format: uuid
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AggregationLayerMetadata'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
   /polygonParts:
     post:
       tags:
@@ -101,6 +134,79 @@ components:
     PolygonPartsPayload:
       $ref: >-
         ./Schema/polygonPartsManager/payload.yaml#/components/schemas/PolygonPartsPayload
+    AggregationLayerMetadata:
+      additionalProperties: false
+      type: object
+      properties:
+        imagingTimeBeginUTC:
+          type: string
+          description: Oldest imaging date (UTC)
+          format: date-time
+        imagingTimeEndUTC:
+          type: string
+          description: Latest imaging date (UTC)
+          format: date-time
+        maxResolutionDeg:
+          type: number
+          minimum: 1.67638e-7
+          maximum: 0.703125
+          format: double
+          description: Maximal resolution of layer in degrees/pixel
+        minResolutionDeg:
+          type: number
+          minimum: 1.67638e-7
+          maximum: 0.703125
+          format: double
+          description: Minimal resolution of layer in degrees/pixel
+        maxResolutionMeter:
+          type: number
+          minimum: 0.0185
+          maximum: 78271.52
+          format: double
+          description: Maximal resolution of layer in meters
+        minResolutionMeter:
+          type: number
+          minimum: 0.0185
+          maximum: 78271.52
+          format: double
+          description: Minimal resolution of layer in meters
+        maxHorizontalAccuracyCE90:
+          type: number
+          minimum: 0.01
+          maximum: 4000
+          format: double
+          description: Maximal horizontal accuracy
+        minHorizontalAccuracyCE90:
+          type: number
+          minimum: 0.01
+          maximum: 4000
+          format: double
+          description: Minimal horizontal accuracy
+        productBoundingBox:
+          type: string
+        sensors:
+          type: array
+          items:
+            type: string
+            pattern: ^(?!\s).+(?<!\s)$
+          minItems: 1
+          description: Layer sensors list
+        footprint:
+          oneOf:
+            - $ref: './Schema/geojson.yaml#/components/schemas/Polygon'
+            - $ref: './Schema/geojson.yaml#/components/schemas/MultiPolygon'
+      required:
+        - imagingTimeBeginUTC
+        - imagingTimeEndUTC
+        - maxResolutionDeg
+        - minResolutionDeg
+        - maxResolutionMeter
+        - minResolutionMeter
+        - maxHorizontalAccuracyCE90
+        - minHorizontalAccuracyCE90
+        - productBoundingBox
+        - sensors
+        - footprint
     ErrorMessage:
       type: object
       properties:
