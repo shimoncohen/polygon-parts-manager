@@ -1,4 +1,3 @@
-import type { IRasterCatalogUpsertRequestBody } from '@map-colonies/mc-model-types';
 import { PostgresConnectionOptions } from 'typeorm/driver/postgres/PostgresConnectionOptions';
 
 export interface ApplicationConfig {
@@ -14,6 +13,9 @@ export interface ApplicationConfig {
       namePrefix: string;
       nameSuffix: string;
     };
+  };
+  aggregation: {
+    maxDecimalDigits: number;
   };
 }
 
@@ -33,13 +35,3 @@ export interface OpenApiConfig {
   jsonPath: string;
   uiPath: string;
 }
-
-//#region catalogClient
-// TODO: raster-catalog-manager defines findRecords input which requires the definition of each property (instead of partial) for no reason - use this fix until upstream type is fixed
-export type FindOptions = Partial<{
-  id: string;
-  metadata: Partial<IRasterCatalogUpsertRequestBody['metadata']>;
-  links: Partial<IRasterCatalogUpsertRequestBody['links']>;
-}>;
-export type FindResponse = Partial<IRasterCatalogUpsertRequestBody>[];
-//#endregion catalogClient
