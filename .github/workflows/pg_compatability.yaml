@@ -16,7 +16,6 @@ jobs:
         node: [20.x]
         postgres: [12]
         postgis: [2.5, 3.3, 3.5]
-        package: [auth-manager, '@map-colonies/auth-bundler', 'auth-cron']
 
     services:
       # Label used to access the service container
