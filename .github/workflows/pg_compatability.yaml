@@ -1,4 +1,4 @@
-name: pg_compatability
+name: pull_request
 
 on: [workflow_dispatch]
 
@@ -57,13 +57,10 @@ jobs:
       - name: Install TS Project dependencies
         run: npm ci
 
-      - name: build packages
-        run: npx lerna run build
-
       - name: Run tests
-        run: npx lerna run test --scope ${{ matrix.package }}
+        run: npx lerna run test
 
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.package }} Test Reporter for node ${{ matrix.node }} and pg ${{ matrix.postgres }}
-          path: packages/${{ matrix.package }}/reports/**
+          path: reports/**
