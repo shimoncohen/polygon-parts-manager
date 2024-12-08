@@ -28,7 +28,7 @@ jobs:
           MINIO_ROOT_PASSWORD: minioadmin
       postgres:
         # Docker Hub image
-        image: postgres:${{ matrix.postgres }}-${{ matrix.postgis }}
+        image: postgis/postgis:${{ matrix.postgres }}-${{ matrix.postgis }}-alpine
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: 1234
