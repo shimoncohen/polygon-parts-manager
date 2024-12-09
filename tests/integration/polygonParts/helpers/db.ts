@@ -7,7 +7,7 @@ import { DatabaseCreateContext, createDatabase, dropDatabase } from 'typeorm-ext
 import type { PolygonPartsPayload } from '../../../../src/polygonParts/models/interfaces';
 
 export const createDB = async (options: Partial<DatabaseCreateContext>): Promise<void> => {
-  await createDatabase({ ...options, synchronize: false, ifNotExist: false });
+  await createDatabase({ ...options, synchronize: false, ifNotExist: true });
 };
 
 export const deleteDB = async (options: DataSourceOptions): Promise<void> => {
