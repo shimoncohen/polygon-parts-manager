@@ -53,5 +53,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: Test Reporter for node ${{ matrix.node }} and pg ${{ matrix.postgres }}
+          name: Test Reporter for node ${{ matrix.node }}, pg ${{ matrix.postgres }} and postgis ${{matrix.postgis}}
           path: reports/**
