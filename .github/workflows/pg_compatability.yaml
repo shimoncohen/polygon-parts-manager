@@ -15,8 +15,8 @@ jobs:
       fail-fast: false
       matrix:
         node: [20.x]
-        postgres: [13]
-        postgis: [3.4]
+        postgres: [12, 13, 14, 16, 17]
+        postgis: [2.5, 3.3, 3.5]
 
     services:
       postgres:
