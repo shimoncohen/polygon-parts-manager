@@ -21,7 +21,7 @@ jobs:
     services:
       postgres:
         # Docker Hub image
-        image: ${{ postgis/postgis:${{ matrix.postgres }}-${{ matrix.postgis }}-alpine || '' }}
+        image: ${{ format('postgis/postgis:{0}-{1}-alpine', matrix.postgres, matrix.postgis) || '' }}
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: 1234
