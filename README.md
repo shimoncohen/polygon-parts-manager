@@ -1,5 +1,7 @@
 # PolygonParts Manager
 
+![Postgres and postgis](https://github.com/shimoncohen/polygon-parts-manager/actions/workflows/pg_compatability.yaml/badge.svg)
+
 ## API
 Checkout the OpenAPI spec [here](/openapi3.yaml)
 
