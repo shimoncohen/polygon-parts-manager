@@ -15,13 +15,13 @@ jobs:
       fail-fast: false
       matrix:
         node: [20.x]
-        postgres: [12, 13, 14, 16]
-        postgis: [2.5, 3.3, 3.5]
+        postgres: [13]
+        postgis: [3.4]
 
     services:
       postgres:
         # Docker Hub image
-        image: ${{ format('postgis/postgis:{0}-{1}-alpine', matrix.postgres, matrix.postgis) || '' }}
+        image: postgis/postgis:${{matrix.postgres}}-${{matrix.postgis}}
         # Provide the password for postgres
         env:
           POSTGRES_PASSWORD: 1234
@@ -53,5 +53,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.package }} Test Reporter for node ${{ matrix.node }} and pg ${{ matrix.postgres }}
+          name: Test Reporter for node ${{ matrix.node }} and pg ${{ matrix.postgres }}
           path: reports/**
