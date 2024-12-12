@@ -43,15 +43,6 @@ jobs:
           --health-retries 5
 
     steps:
-      - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            Postgres and postgis compatability:
-          reactions: rocket
-
       - name: Check out Git repository
         uses: actions/checkout@v4
 
@@ -93,7 +84,6 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Postgres and postgis compatability:
-          reactions: rocket
   
       - name: Update comment
         if: steps.fc.outputs.comment-id != ''
@@ -102,4 +92,3 @@ jobs:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
             ${{ github.event.issue.created_at }} ${{ steps.checkout.outcome == 'success' && ':white_check_mark:' || ':x:' }} run postgis/postgis:${{matrix.postgres}}
-          reactions: hooray
