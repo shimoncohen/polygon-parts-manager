@@ -55,6 +55,7 @@ jobs:
         run: npm ci
 
       - name: Run tests
+        id: test
         run: npm run test
 
       - name: PR Comment
@@ -65,5 +66,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '${{ steps.checkout.outcome == 'success' && ':white_check_mark:' || ':x:' }} run postgis/postgis:${{matrix.postgres}}'
+              body: '${{ steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} run postgis/postgis:${{matrix.postgres}}'
             })
