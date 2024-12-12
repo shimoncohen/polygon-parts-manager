@@ -11,18 +11,18 @@ jobs:
     #if: contains(github.event.issue_comment.comment.body, 'pg-check')
     
     steps:
+      - name: Echo github obj
+        run: echo ${{ toJson(github) }}
       - name: Check out Git repository
         id: checkout
         uses: actions/checkout@v4
       - name: PR Comment
         uses: actions/github-script@v7
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
         with:
           script: |
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: ':info: ${{ steps.checkout.outcome }} run ${{ GITHUB_CONTEXT }}'
+              body: ':info: ${{ steps.checkout.outcome }} run'
             })
