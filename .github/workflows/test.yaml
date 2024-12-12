@@ -8,7 +8,6 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: always()
     steps:
       - name: Check out Git repository
         id: checkout
