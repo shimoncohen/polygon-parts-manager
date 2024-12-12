@@ -24,5 +24,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: ':info: ${{ steps.checkout.outcome }} run $GITHUB_CONTEXT'
+              body: ':info: ${{ steps.checkout.outcome }} run ${{ GITHUB_CONTEXT }}'
             })
