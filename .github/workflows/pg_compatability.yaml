@@ -104,4 +104,4 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            ${{ steps.checkout.outcome == 'success' && ':white_check_mark:' || ':x:' }} ${{ github.event.issue.created_at }} run postgis/postgis:${{matrix.postgres}}
+            ${{ steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} ${{ github.event.issue.created_at }} run postgis/postgis:${{matrix.postgres}}
