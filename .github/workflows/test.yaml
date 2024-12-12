@@ -3,21 +3,15 @@ name: test
 on:
   issue_comment:
     types: [created]
-
-env: 
-  DB_HOST: localhost
   
-
 jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out Git repository
         id: checkout
         uses: actions/checkout@v4
-
       - name: PR Comment
         uses: actions/github-script@v2
         with:
