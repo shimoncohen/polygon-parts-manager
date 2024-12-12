@@ -32,6 +32,14 @@ jobs:
           issue-number: ${{ github.event.issue.number }}
           body: |
             Postgres and postgis compatability:
+      - name: Update comment
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: |
+            
+            ${{ github.event.issue.created_at }}
 
   tests:
     name: Run Tests
@@ -105,4 +113,4 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            ${{ steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} ${{ github.event.issue.created_at }} run postgis/postgis:${{matrix.postgres}}
+            ${{ steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} run for `postgis/postgis:${{matrix.postgres}}`
