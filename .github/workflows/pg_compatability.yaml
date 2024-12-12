@@ -13,7 +13,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: contains(github.event.pull_request.labels.*.name, 'pg-check')
+    if: contains(github.event.pull_request.labels.*.name, 'pg-check') && github.event.review.state == 'approved'
 
     strategy:
       fail-fast: false
