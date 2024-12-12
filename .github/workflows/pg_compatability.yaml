@@ -92,6 +92,7 @@ jobs:
       #      })
       - name: Find Comment
         uses: peter-evans/find-comment@v1
+        if: always()
         id: fc
         with:
           issue-number: ${{ github.event.issue.number }}
