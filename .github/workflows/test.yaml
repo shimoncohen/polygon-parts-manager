@@ -1,0 +1,32 @@
+name: test
+
+on:
+  pull_request:
+    types: [labeled]
+  workflow_dispatch:
+
+env: 
+  DB_HOST: localhost
+  
+
+jobs:
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out Git repository
+        id: checkout
+        uses: actions/checkout@v4
+
+      - name: PR Comment
+        uses: actions/github-script@v2
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          script: |
+            github.issues.createComment({
+              issue_number: ${{ github.event.number }},
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: ':info: ${{ steps.checkout.outcome }} run'
+            })
