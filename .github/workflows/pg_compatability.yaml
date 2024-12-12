@@ -43,6 +43,15 @@ jobs:
           --health-retries 5
 
     steps:
+      - name: Create comment
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Postgres and postgis compatability:
+          reactions: rocket
+
       - name: Check out Git repository
         uses: actions/checkout@v4
 
@@ -75,7 +84,7 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           comment-author: 'github-actions[bot]'
-          body-includes: run
+          body-includes: Postgres and postgis compatability
   
       - name: Create comment
         if: steps.fc.outputs.comment-id == ''
