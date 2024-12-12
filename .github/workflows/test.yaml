@@ -11,8 +11,11 @@ jobs:
     #if: contains(github.event.issue_comment.comment.body, 'pg-check')
     
     steps:
-      - name: Echo github obj
-        run: echo ${{ toJson(github) }}
+      - name: Check object
+        run: |
+          cat << OBJECT
+          ${{ toJson(github) }}
+          OBJECT
       - name: Check out Git repository
         id: checkout
         uses: actions/checkout@v4
