@@ -8,7 +8,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    #if: contains(github.event.issue_comment.comment.body, 'pg-check')
+    if: github.event.comment.body == 'pg-check'
     
     steps:
       - name: Check object
