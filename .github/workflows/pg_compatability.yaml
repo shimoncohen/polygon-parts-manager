@@ -3,9 +3,9 @@ name: pg_compatability
 on:
   #pull_request:
   #  types: [labeled]
-  #issue_comment:
-  #  types: [created]
-  workflow_dispatch:
+  issue_comment:
+    types: [created]
+  #workflow_dispatch:
 
 env: 
   DB_HOST: localhost
@@ -58,14 +58,39 @@ jobs:
         id: test
         run: npm run test
 
-      - name: PR Comment
-        uses: actions/github-script@v7
-        if: always()
+      #- name: PR Comment
+      #  uses: actions/github-script@v7
+      #  if: always()
+      #  with:
+      #    script: |
+      #      github.rest.issues.createComment({
+      #        issue_number: context.issue.number,
+      #        owner: context.repo.owner,
+      #        repo: context.repo.repo,
+      #        body: '${{ steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} run postgis/postgis:${{matrix.postgres}}'
+      #      })
+      - name: Find Comment
+        uses: peter-evans/find-comment@v1
+        id: fc
         with:
-          script: |
-            github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body: '${{ steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} run postgis/postgis:${{matrix.postgres}}'
-            })
+          issue-number: ${{ github.event.issue.number }}
+          comment-author: 'github-actions[bot]'
+          body-includes: run
+  
+      - name: Create comment
+        if: steps.fc.outputs.comment-id == ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Postgres and postgis compatability:
+          reactions: rocket
+  
+      - name: Update comment
+        if: steps.fc.outputs.comment-id != ''
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          comment-id: ${{ steps.fc.outputs.comment-id }}
+          body: |
+            '${{ github.event.issue.created_at }} ${{ steps.checkout.outcome == 'success' && :white_check_mark: || :x: }} run postgis/postgis:${{matrix.postgres}}'
+          reactions: hooray
