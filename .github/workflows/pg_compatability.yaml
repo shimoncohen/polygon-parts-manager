@@ -31,14 +31,14 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            Postgres and postgis compatability:
+            **Postgres and postgis compatability:**
       - name: Update comment
         if: steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            ${{ github.event.comment.created_at }}
+            **${{ github.event.comment.created_at }}**
 
   tests:
     name: Run Tests
