@@ -119,4 +119,4 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            ${{ jobs.tests.steps.test.outcome == 'success' && ':white_check_mark:' || ':x:' }} run for `postgis/postgis:${{matrix.postgres}}`
+            ${{ needs.tests.result == 'success' && ':white_check_mark:' || ':x:' }} run for `postgis/postgis:${{matrix.postgres}}`
