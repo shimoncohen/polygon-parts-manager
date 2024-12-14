@@ -44,7 +44,7 @@ jobs:
     name: Run Tests
     runs-on: ubuntu-latest
     #if: contains(github.event.pull_request.labels.*.name, 'pg-check') && github.event.review.state == 'approved'
-    if: github.event.comment.body == 'pg-check'
+    #if: github.event.comment.body == 'pg-check'
 
     strategy:
       fail-fast: false
@@ -99,7 +99,7 @@ jobs:
       #      })
       - name: Find Comment
         uses: peter-evans/find-comment@v1
-        if: always()
+        if: always() && github.event.comment.body == 'pg-check'
         id: fc
         with:
           issue-number: ${{ github.event.issue.number }}
@@ -107,7 +107,7 @@ jobs:
           body-includes: Postgres and postgis compatability
   
       - name: Update comment
-        if: always() && steps.fc.outputs.comment-id != ''
+        if: always() && github.event.comment.body == 'pg-check' && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v1
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
