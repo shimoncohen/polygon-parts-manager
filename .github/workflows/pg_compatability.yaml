@@ -9,7 +9,7 @@ on:
 
 env: 
   DB_HOST: localhost
-  PROMPT: true
+  PROMPT: false
   PROMPT_TEXT: 'pg-check'
 
 jobs:
