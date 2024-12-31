@@ -16,7 +16,7 @@ jobs:
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
-    if: ${{ PROMPT }} && github.event.comment.body == 'pg-check'
+    if: ${{ env.PROMPT }} && github.event.comment.body == 'pg-check'
 
     steps:
       - name: Find Comment
@@ -44,7 +44,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: ${{ PROMPT }}
+    if: ${{ env.PROMPT }}
     #if: contains(github.event.pull_request.labels.*.name, 'pg-check') && github.event.review.state == 'approved'
     #if: github.event.comment.body == 'pg-check'
 
