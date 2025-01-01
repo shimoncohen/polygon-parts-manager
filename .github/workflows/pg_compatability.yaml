@@ -15,26 +15,42 @@ on:
         required: false
   issue_comment:
     types: [created]
+    inputs:
+      PROMPT:
+        description: Prompt results
+        type: string
+        default: 'true'
+        required: false
+      PROMPT_TEXT:
+        description: Text for activating the workflow
+        type: string
+        default: 'pg-check'
+        required: false
   workflow_dispatch:
+    inputs:
+      repository:
+        description: 'The repository from which the slash command was dispatched'
+        required: true
+      comment-id:
+        description: 'The comment-id of the slash command'
+        required: true
 
 env:
   DB_HOST: localhost
 
 jobs:
-  print:
-    name: print
-    runs-on: ubuntu-latest
-
-    steps:
-    - name: Check object
-      run: |
-        echo ${{ inputs.PROMPT }}
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
-    if: ${{ inputs.PROMPT && github.event.comment.body == 'pg-check' }}
+    #if: ${{ inputs.PROMPT && github.event.comment.body == 'pg-check' }}
 
     steps:
+      - name: Slash Command Dispatch
+        uses: peter-evans/slash-command-dispatch@v2
+        with:
+          commands: pg-check
+          issue-type: pull-request
+      
       # Find our bot's comment
       - name: Find Comment
         uses: peter-evans/find-comment@v3
