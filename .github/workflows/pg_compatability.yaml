@@ -6,7 +6,7 @@ on:
       PROMPT:
         description: Prompt results
         type: boolean
-        default: true
+        default: false
       PROMPT_TEXT:
         description: Text for activating the workflow
         type: string
