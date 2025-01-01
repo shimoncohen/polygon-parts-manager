@@ -11,6 +11,7 @@ on:
         required: true
       versions:
         description: 'Wanted postgis versions to check'
+        default: "['12-2.5','13-3.3']"
         required: false
 
 env:
