@@ -28,9 +28,7 @@ jobs:
     steps:
     - name: Check object
       run: |
-        cat << OBJECT
-        ${{ toJson(inputs.PROMPT) }}
-        OBJECT
+        echo ${{ inputs.PROMPT }}
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
