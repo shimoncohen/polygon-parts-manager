@@ -6,7 +6,7 @@ on:
       PROMPT:
         description: Prompt results
         type: boolean
-        default: false
+        default: true
       PROMPT_TEXT:
         description: Text for activating the workflow
         type: string
@@ -55,7 +55,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: ${{ inputs.PROMPT == true }}
+    if: inputs.PROMPT == true
 
     strategy:
       fail-fast: false
