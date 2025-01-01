@@ -27,13 +27,6 @@ on:
         default: 'pg-check'
         required: false
   workflow_dispatch:
-    inputs:
-      repository:
-        description: 'The repository from which the slash command was dispatched'
-        required: true
-      comment-id:
-        description: 'The comment-id of the slash command'
-        required: true
 
 env:
   DB_HOST: localhost
@@ -81,7 +74,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: ${{ inputs.PROMPT }}
+    #if: ${{ inputs.PROMPT }}
 
     strategy:
       fail-fast: false
@@ -124,7 +117,7 @@ jobs:
       # Find our bot's comment
       - name: Find Comment
         uses: peter-evans/find-comment@v3
-        if: always() && github.event.comment.body == 'pg-check'
+        if: always() #&& github.event.comment.body == 'pg-check'
         id: fc
         with:
           issue-number: ${{ github.event.issue.number }}
@@ -133,7 +126,7 @@ jobs:
   
       # If a comment exists, update it with the test result
       - name: Update comment
-        if: always() && github.event.comment.body == 'pg-check' && steps.fc.outputs.comment-id != ''
+        if: always() && steps.fc.outputs.comment-id != '' #&& github.event.comment.body == 'pg-check'
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
