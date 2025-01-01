@@ -21,6 +21,16 @@ env:
   DB_HOST: localhost
 
 jobs:
+  print:
+    name: print
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check object
+      run: |
+        cat << OBJECT
+        ${{ toJson(inputs.PROMPT) }}
+        OBJECT
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
