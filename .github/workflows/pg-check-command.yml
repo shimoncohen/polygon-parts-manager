@@ -59,7 +59,7 @@ jobs:
       fail-fast: false
       matrix:
         node: [20.x]
-        postgres: ${{ github.event.client_payload.slash_command.args.named.versions }}
+        postgres: ${{ fromJSON(inputs.versions) }}
 
     services:
       postgres:
