@@ -38,12 +38,6 @@ jobs:
     #if: ${{ inputs.PROMPT && github.event.comment.body == 'pg-check' }}
 
     steps:
-      - name: Slash Command Dispatch
-        uses: peter-evans/slash-command-dispatch@v2
-        with:
-          commands: pg-check
-          issue-type: pull-request
-      
       # Find our bot's comment
       - name: Find Comment
         uses: peter-evans/find-comment@v3
