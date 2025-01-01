@@ -31,6 +31,9 @@ on:
       issue-number:
         description: 'The issue-number of the slash command'
         required: true
+      comment-creation-date:
+        description: 'The slash command creation date'
+        required: true
 
 env:
   DB_HOST: localhost
@@ -67,7 +70,7 @@ jobs:
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
           body: |
-            **${{ github.event.comment.created_at }}**
+            **${{ inputs.comment-creation-date }}**
 
   tests:
     name: Run Tests
