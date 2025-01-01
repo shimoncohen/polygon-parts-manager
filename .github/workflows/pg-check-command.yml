@@ -1,31 +1,6 @@
 name: pg_compatibility
 
 on:
-  workflow_call:
-    inputs:
-      PROMPT:
-        description: Prompt results
-        type: string
-        default: 'true'
-        required: false
-      PROMPT_TEXT:
-        description: Text for activating the workflow
-        type: string
-        default: 'pg-check'
-        required: false
-  issue_comment:
-    types: [created]
-    inputs:
-      PROMPT:
-        description: Prompt results
-        type: string
-        default: 'true'
-        required: false
-      PROMPT_TEXT:
-        description: Text for activating the workflow
-        type: string
-        default: 'pg-check'
-        required: false
   workflow_dispatch:
     inputs:
       issue-number:
