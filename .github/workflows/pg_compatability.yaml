@@ -1,6 +1,16 @@
 name: pg_compatibility
 
 on:
+  workflow_call:
+    inputs:
+      PROMPT:
+        description: Prompt results
+        type: boolean
+        default: false
+      PROMPT_TEXT:
+        description: Text for activating the workflow
+        type: string
+        default: pg-check
   issue_comment:
     types: [created]
   workflow_dispatch:
@@ -12,12 +22,12 @@ jobs:
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
-    if: github.event.comment.body == 'pg-check'
+    if: ${{ inputs.PROMPT == 'true' }} && github.event.comment.body == 'pg-check'
 
     steps:
       # Find our bot's comment
       - name: Find Comment
-        uses: peter-evans/find-comment@v1
+        uses: peter-evans/find-comment@v3
         id: fc
         with:
           issue-number: ${{ github.event.issue.number }}
@@ -45,12 +55,13 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
+    if: ${{ inputs.PROMPT == 'true' }}
 
     strategy:
       fail-fast: false
       matrix:
         node: [20.x]
-        postgres: [12-2.5, 13-3.3]
+        postgres: [12-2.5, 13-3.3, 14-3.3, 14-3.5, 16-3.5, 17-3.5]
 
     services:
       postgres:
