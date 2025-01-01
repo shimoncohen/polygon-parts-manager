@@ -5,8 +5,8 @@ on:
     inputs:
       PROMPT:
         description: Prompt results
-        type: boolean
-        default: true
+        type: string
+        default: 'true'
         required: false
       PROMPT_TEXT:
         description: Text for activating the workflow
