@@ -5,7 +5,7 @@ on:
     inputs:
       PROMPT:
         description: Prompt results
-        type: boolean
+        type: string
         default: true
       PROMPT_TEXT:
         description: Text for activating the workflow
@@ -22,7 +22,7 @@ jobs:
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
-    if: ${{ inputs.PROMPT && github.event.comment.body == 'pg-check' }}
+    if: ${{ inputs.PROMPT == 'true' && github.event.comment.body == 'pg-check' }}
 
     steps:
       # Find our bot's comment
@@ -55,7 +55,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: ${{ inputs.PROMPT }}
+    if: ${{ inputs.PROMPT == 'true' }}
 
     strategy:
       fail-fast: false
