@@ -24,7 +24,7 @@ jobs:
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
-    if: inputs.PROMPT == true && github.event.comment.body == 'pg-check'
+    if: ${{ inputs.PROMPT == true && github.event.comment.body == 'pg-check' }}
 
     steps:
       # Find our bot's comment
@@ -57,7 +57,7 @@ jobs:
   tests:
     name: Run Tests
     runs-on: ubuntu-latest
-    if: inputs.PROMPT == true
+    if: ${{ inputs.PROMPT == true }}
 
     strategy:
       fail-fast: false
