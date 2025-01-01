@@ -9,6 +9,9 @@ on:
       comment-creation-date:
         description: 'The slash command creation date'
         required: true
+      versions:
+        description: 'Wanted postgis versions to check'
+        required: false
 
 env:
   DB_HOST: localhost
