@@ -15,3 +15,5 @@ jobs:
           commands: |
             pg-check
           dispatch-type: workflow
+          static-args: |
+            issue-number=${{ github.event.issue.number }}
