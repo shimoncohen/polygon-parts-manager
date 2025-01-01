@@ -53,6 +53,7 @@ jobs:
 
   tests:
     name: Run Tests
+    needs: create_comment
     runs-on: ubuntu-latest
     #if: ${{ inputs.PROMPT }}
 
