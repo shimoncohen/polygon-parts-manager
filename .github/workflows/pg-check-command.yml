@@ -18,6 +18,17 @@ env:
   DB_HOST: localhost
 
 jobs:
+  versions_to_json:
+    name: Convert versions input to JSON
+    runs-on: ubuntu-latest
+    outputs:
+      versions: ${{ steps.convert-to-json.outputs.VERSIONS }}
+    steps:
+      - id: convert-to-json
+        run: |
+          versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
+          echo "VERSIONS=$versions" >> $GITHUB_OUTPUT
+    
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
@@ -53,7 +64,7 @@ jobs:
 
   tests:
     name: Run Tests
-    needs: create_comment
+    needs: [versions_to_json, create_comment]
     runs-on: ubuntu-latest
     #if: ${{ inputs.PROMPT }}
 
@@ -61,7 +72,7 @@ jobs:
       fail-fast: false
       matrix:
         node: [20.x]
-        postgres: ${{ fromJSON(inputs.versions) }}
+        postgres: ${{ needs.check-pr.outputs.versions }}
 
     services:
       postgres:
