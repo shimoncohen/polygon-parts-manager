@@ -1,4 +1,4 @@
-name: pg_compatibility
+name: pg-check
 
 on:
   workflow_dispatch:
@@ -7,17 +7,22 @@ on:
         description: 'The issue-number of the slash command'
         required: true
       comment-creation-date:
-        description: 'The slash command creation date'
+        description: 'The slash command creation date passed from the slash-command workflow'
         required: true
       versions:
-        description: 'Wanted postgis versions to check'
+        description: 'Wanted postgis docker versions to check'
         default: 12-2.5,13-3.3
         required: false
+      node-versions:  
+        description: 'Node.js versions to check'  
+        default: 20.x  
+        required: false                                   
 
 env:
   DB_HOST: localhost
 
 jobs:
+  # Convert versions variable from comma delimited string to JSON
   versions_to_json:
     name: Convert versions input to JSON
     runs-on: ubuntu-latest
@@ -28,11 +33,23 @@ jobs:
         run: |
           versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
           echo "VERSIONS=$versions" >> $GITHUB_OUTPUT
-    
+  
+  # Convert node-versions variable from comma-delimited string to JSON  
+  node_versions_to_json:
+    name: Convert node-versions input to JSON
+    runs-on: ubuntu-latest
+    outputs:
+      node_versions: ${{ steps.convert-to-json.outputs.NODE_VERSIONS }}
+    steps:
+      - id: convert-to-json
+        run: |
+          versions=$(echo ${{ inputs.node-versions }} | jq -R -c 'split(",")')
+          echo "NODE_VERSIONS=$versions" >> $GITHUB_OUTPUT
+  
+  # Create a PR comment for the workflow's results
   create_comment:
     name: Create comment
     runs-on: ubuntu-latest
-    #if: ${{ inputs.PROMPT && github.event.comment.body == 'pg-check' }}
 
     steps:
       # Find our bot's comment
@@ -64,14 +81,13 @@ jobs:
 
   tests:
     name: Run Tests
-    needs: [versions_to_json, create_comment]
+    needs: [node_versions_to_json, versions_to_json, create_comment]
     runs-on: ubuntu-latest
-    #if: ${{ inputs.PROMPT }}
 
     strategy:
       fail-fast: false
       matrix:
-        node: [20.x]
+        node: ${{ fromJSON(needs.node_versions_to_json.outputs.node_versions) }}
         postgres: ${{ fromJSON(needs.versions_to_json.outputs.versions) }}
 
     services:
@@ -109,7 +125,7 @@ jobs:
       # Find our bot's comment
       - name: Find Comment
         uses: peter-evans/find-comment@v3
-        if: always() #&& github.event.comment.body == 'pg-check'
+        if: always()
         id: fc
         with:
           issue-number: ${{ inputs.issue-number }}
@@ -118,7 +134,7 @@ jobs:
   
       # If a comment exists, update it with the test result
       - name: Update comment
-        if: always() && steps.fc.outputs.comment-id != '' #&& github.event.comment.body == 'pg-check'
+        if: always() && steps.fc.outputs.comment-id != ''
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ steps.fc.outputs.comment-id }}
