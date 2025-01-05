@@ -58,13 +58,13 @@ jobs:
 
     steps:
       # Find our bot's comment
-      - name: Find Comment
-        uses: peter-evans/find-comment@v3
-        id: fc
-        with:
-          issue-number: ${{ inputs.issue-number }}
-          comment-author: 'github-actions[bot]'
-          body-includes: Postgres and postgis compatibility
+      # - name: Find Comment
+      #   uses: peter-evans/find-comment@v3
+      #   id: fc
+      #   with:
+      #     issue-number: ${{ inputs.issue-number }}
+      #     comment-author: 'github-actions[bot]'
+      #     body-includes: Postgres and postgis compatibility
 
       # Create a comment if it doesn't exist
       - name: Create comment
@@ -73,16 +73,16 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            **Checking postgis compatability for ${{ github.event.pull_request.head.sha }}**
+            **Checking postgis compatability for latest commit**
 
       # If a comment exists, update it with the date and time
-      - name: Update comment
-        if: steps.fc.outputs.comment-id != ''
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          comment-id: ${{ steps.fc.outputs.comment-id }}
-          body: |
-            **${{ inputs.comment-creation-date }} ${{ github.sha }}**
+      # - name: Update comment
+      #   if: steps.fc.outputs.comment-id != ''
+      #   uses: peter-evans/create-or-update-comment@v4
+      #   with:
+      #     comment-id: ${{ steps.fc.outputs.comment-id }}
+      #     body: |
+      #       **${{ inputs.comment-creation-date }}**
 
   tests:
     name: Run Tests
@@ -137,14 +137,14 @@ jobs:
           comment-author: 'github-actions[bot]'
           body-includes: Postgres and postgis compatibility
 
-      # Create a comment if it doesn't exist
-      - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
-        uses: peter-evans/create-or-update-comment@v4
-        with:
-          issue-number: ${{ github.event.issue.number }}
-          body: |
-            **Checking postgis compatability for ${{ github.sha }}**
+      # # Create a comment if it doesn't exist
+      # - name: Create comment
+      #   if: steps.fc.outputs.comment-id == ''
+      #   uses: peter-evans/create-or-update-comment@v4
+      #   with:
+      #     issue-number: ${{ github.event.issue.number }}
+      #     body: |
+      #       **Checking postgis compatability for ${{ github.sha }}**
   
       # If a comment exists, update it with the test result
       - name: Update comment
