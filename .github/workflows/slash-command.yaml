@@ -11,7 +11,7 @@ jobs:
       - name: Check object
         run: |
           cat << OBJECT
-          ${{ toJson(github) }}
+          ${{ toJson(github.event.issue.pull_request) }}
           OBJECT
       - name: Slash Command Dispatch
         id: scd
