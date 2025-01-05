@@ -29,6 +29,11 @@ jobs:
     outputs:
       versions: ${{ steps.convert-to-json.outputs.VERSIONS }}
     steps:
+      - name: Check object
+        run: |
+          cat << OBJECT
+          ${{ toJson(github) }}
+          OBJECT
       - id: convert-to-json
         run: |
           versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
