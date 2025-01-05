@@ -8,11 +8,11 @@ jobs:
   slashCommandDispatch:
     runs-on: ubuntu-latest
     steps:
-      - name: Check object
-        run: |
-          cat << OBJECT
-          ${{ toJson(github.event.pull_request) }}
-          OBJECT
+      # - name: Check object
+      #   run: |
+      #     cat << OBJECT
+      #     ${{ toJson(github.event.pull_request) }}
+      #     OBJECT
       - name: Slash Command Dispatch
         id: scd
         uses: peter-evans/slash-command-dispatch@v4
