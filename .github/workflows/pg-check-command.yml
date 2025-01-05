@@ -68,12 +68,13 @@ jobs:
 
       # Create a comment if it doesn't exist
       - name: Create comment
-        if: steps.fc.outputs.comment-id == ''
+        # if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v4
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            **Checking postgis compatability for latest commit**
+            **${{ inputs.comment-creation-date }}**
+            Checking postgis compatability for latest commit
 
       # If a comment exists, update it with the date and time
       # - name: Update comment
@@ -135,7 +136,7 @@ jobs:
         with:
           issue-number: ${{ inputs.issue-number }}
           comment-author: 'github-actions[bot]'
-          body-includes: Postgres and postgis compatibility
+          body-includes: ${{ inputs.comment-creation-date }}
 
       # # Create a comment if it doesn't exist
       # - name: Create comment
