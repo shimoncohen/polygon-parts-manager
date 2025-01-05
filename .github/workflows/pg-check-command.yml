@@ -68,7 +68,7 @@ jobs:
         with:
           issue-number: ${{ github.event.issue.number }}
           body: |
-            **Checking postgis compatability for ${{ github.sha }}**
+            **Checking postgis compatability for ${{ github.event.pull_request.head.sha }}**
 
       # If a comment exists, update it with the date and time
       - name: Update comment
