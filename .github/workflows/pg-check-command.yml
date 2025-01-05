@@ -29,11 +29,6 @@ jobs:
     outputs:
       versions: ${{ steps.convert-to-json.outputs.VERSIONS }}
     steps:
-      - name: Check object
-        run: |
-          cat << OBJECT
-          ${{ toJson(github) }}
-          OBJECT
       - id: convert-to-json
         run: |
           versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
@@ -71,7 +66,7 @@ jobs:
         # if: steps.fc.outputs.comment-id == ''
         uses: peter-evans/create-or-update-comment@v4
         with:
-          issue-number: ${{ github.event.issue.number }}
+          issue-number: ${{ inputs.issue-number }}
           body: |
             **${{ inputs.comment-creation-date }}**
             Checking postgis compatability for latest commit
