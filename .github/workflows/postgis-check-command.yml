@@ -9,9 +9,15 @@ on:
       comment-creation-date:
         description: 'The slash command creation date passed from the slash-command workflow'
         required: true
+      versions:
+        description: 'Wanted postgis docker versions to check'
+        required: false
+      node-versions:
+        description: 'Node.js versions to check'
+        required: false
 
 jobs:
-  slash_command_dispatch:
+  postgis_check:
     uses: MapColonies/shared-workflows/.github/workflows/postgis-check-command.yml@fix-slash-command
     secrets: inherit
     with:
