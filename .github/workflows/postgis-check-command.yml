@@ -23,3 +23,5 @@ jobs:
     with:
       issue-number: ${{ inputs.issue-number }}
       comment-creation-date: ${{ inputs.comment-creation-date }}
+      versions: ${{ inputs.versions }}
+      node-versions: ${{ inputs.node-versions }}
