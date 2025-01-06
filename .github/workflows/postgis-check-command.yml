@@ -63,8 +63,8 @@ jobs:
           if [ -z "${{inputs.versions}}" ]; then
             versions=${{env.DEFAULT_VERSIONS}}
           fi
-          versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
-          echo "VERSIONS=$versions" >> $GITHUB_OUTPUT
+          versions_json=$(echo $versions | jq -R -c 'split(",")')
+          echo "VERSIONS=$versions_json" >> $GITHUB_OUTPUT
   
   # Convert node-versions variable from comma-delimited string to JSON  
   node_versions_to_json:
