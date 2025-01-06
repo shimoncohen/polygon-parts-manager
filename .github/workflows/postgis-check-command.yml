@@ -1,0 +1,19 @@
+name: postgis-check
+
+on:
+  workflow_dispatch:
+    inputs:
+      issue-number:
+        description: 'The issue-number of the slash command'
+        required: true
+      comment-creation-date:
+        description: 'The slash command creation date passed from the slash-command workflow'
+        required: true
+
+jobs:
+  slash_command_dispatch:
+    uses: MapColonies/shared-workflows/.github/workflows/postgis-check-command.yml@v3.1.0
+    secrets: inherit
+    with:
+      issue-number: ${{ inputs.issue-number }}
+      comment-creation-date: ${{ inputs.comment-creation-date }}
