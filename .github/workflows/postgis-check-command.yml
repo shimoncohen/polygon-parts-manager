@@ -60,7 +60,9 @@ jobs:
     steps:
       - id: convert-to-json
         run: |
-          versions=${"${{inputs.versions}}":="${{env.DEFAULT_VERSIONS}}"}
+          if [ -z "${{inputs.versions}}" ]
+            versions=${{env.DEFAULT_VERSIONS}}
+          fi
           versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
           echo "VERSIONS=$versions" >> $GITHUB_OUTPUT
   
