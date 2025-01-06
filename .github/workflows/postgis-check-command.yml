@@ -39,7 +39,7 @@ on:
         required: true
       versions:
         description: 'Wanted postgis docker versions to check'
-        default: 12-2.5,13-3.3
+        default: ''
         required: false
       node-versions:  
         description: 'Node.js versions to check'  
