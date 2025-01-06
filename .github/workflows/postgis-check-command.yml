@@ -60,7 +60,7 @@ jobs:
     steps:
       - id: convert-to-json
         run: |
-          if [ -z "${{inputs.versions}}" ]
+          if [ -z "${{inputs.versions}}" ]; then
             versions=${{env.DEFAULT_VERSIONS}}
           fi
           versions=$(echo ${{ inputs.versions }} | jq -R -c 'split(",")')
