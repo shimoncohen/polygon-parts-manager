@@ -62,6 +62,8 @@ jobs:
         run: |
           if [ -z "${{inputs.versions}}" ]; then
             versions=${{env.DEFAULT_VERSIONS}}
+          else
+            versions=${{ inputs.versions }}
           fi
           versions_json=$(echo $versions | jq -R -c 'split(",")')
           echo "VERSIONS=$versions_json" >> $GITHUB_OUTPUT
