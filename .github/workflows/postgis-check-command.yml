@@ -50,7 +50,7 @@ env:
   DB_HOST: localhost
   DB_PORT: 5432
   DB_NAME: postgres
-  DB_USERNAME: mapcolonies
+  DB_USERNAME: postgres
   DB_PASSWORD: stam
   DEFAULT_VERSIONS: 12-2.5,13-3.3
 
