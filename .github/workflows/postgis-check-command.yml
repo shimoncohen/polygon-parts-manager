@@ -41,10 +41,14 @@ on:
         description: 'Wanted postgis docker versions to check'
         default: ''
         required: false
-      node-versions:  
-        description: 'Node.js versions to check'  
-        default: 20.x  
-        required: false                                   
+      node-versions:
+        description: 'Node.js versions to check'
+        default: 20.x
+        required: false
+      schema:
+        description: 'Wanted schema for migrations'
+        default: ''
+        required: false
 
 env:
   DB_HOST: localhost
@@ -156,6 +160,15 @@ jobs:
 
       - name: Install TS Project dependencies
         run: npm ci
+
+      - name: Create schema
+        if: inputs.schema != ''
+        run: psql -h $DB_HOST -d $DB_NAME -U $DB_USERNAME -c 'CREATE SCHEMA ${{ inputs.schema }};'
+        env:
+          PGPASSWORD: ${{ env.DB_PASSWORD }}
+
+      - name: Run migrations
+        run: npm run migration:run
 
       - name: Run tests
         id: test
